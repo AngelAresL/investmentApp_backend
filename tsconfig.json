@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"], 
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*.ts", "src/middleware/autMiddleware.ts"],
+  "exclude": ["node_modules"]
+}
