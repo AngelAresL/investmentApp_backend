@@ -7,10 +7,10 @@ export class Investment {
   id: number;
 
   @Column()
-  name: string; // Nombre de la inversión, por ejemplo, el nombre del fondo o de la acción
+  name: string; // Nombre de la inversión
 
   @Column()
-    symbol: string; // Símbolo de la inversión, por ejemplo, el ticker de la acción
+  symbol: string; // Símbolo de la inversión (ticker de la acción)
 
   @Column()
   type: string; // Tipo de inversión (acción, fondo, etc.)
@@ -18,11 +18,11 @@ export class Investment {
   @Column('decimal')
   amount: number; // Monto invertido
 
-  @Column()
-  date: Date; // Fecha de la inversión
+  @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' }) // Fecha de la inversión por defecto
+  date: Date;
 
   @ManyToOne(() => User, (user) => user.investments)
-  user: User; // Relación muchos-a-uno con el usuario
+  user: User; // Relación con el usuario
 
   constructor() {
     this.id = 0;
@@ -30,7 +30,7 @@ export class Investment {
     this.symbol = '';
     this.type = '';
     this.amount = 0;
-    this.date = new Date();
+    this.date = new Date(); // Generación automática
     this.user = new User();
   }
 }
