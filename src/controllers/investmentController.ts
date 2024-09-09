@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
-import { AppDataSource } from '../index';
-import { Investment } from '../entity/investment';
-import { User } from '../entity/user';
-import priceService from '../services/priceServices'; // Importamos el servicio de precios
+import { Request, Response } from "express";
+import { AppDataSource } from "../index";
+import { Investment } from "../entity/investment";
+import { User } from "../entity/user";
+import priceService from "../services/priceServices"; // Importamos el servicio de precios
 
 export const investmentController = {
   addInvestment: async (req: Request, res: Response) => {
@@ -15,7 +15,7 @@ export const investmentController = {
       const user = await userRepository.findOneBy({ id: userId });
 
       if (!user) {
-        return res.status(404).json({ message: 'Usuario no encontrado' });
+        return res.status(404).json({ message: "Usuario no encontrado" });
       }
 
       // Crear la nueva inversión con fecha automática
@@ -30,10 +30,12 @@ export const investmentController = {
 
       await investmentRepository.save(newInvestment);
 
-      return res.status(201).json({ message: 'Inversión añadida exitosamente' });
+      return res
+        .status(201)
+        .json({ message: "Inversión añadida exitosamente" });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Error al añadir la inversión' });
+      return res.status(500).json({ message: "Error al añadir la inversión" });
     }
   },
 
@@ -42,15 +44,19 @@ export const investmentController = {
     const userId = res.locals.user.id;
 
     try {
-      const investments = await investmentRepository.find({ where: { user: { id: userId } } });
+      const investments = await investmentRepository.find({
+        where: { user: { id: userId } },
+      });
 
       // Obtener los precios de cierre y calcular las variaciones
       const investmentsWithPrices = await Promise.all(
         investments.map(async (investment) => {
           let priceData;
           let dividends = null;
+          let latestEarnings;
+          let upcomingEarnings;
 
-          if (investment.type === 'crypto') {
+          if (investment.type === "crypto") {
             priceData = await priceService.getCryptoPrice(investment.symbol);
           } else {
             priceData = await priceService.getPrice(investment.symbol);
@@ -58,23 +64,40 @@ export const investmentController = {
           }
 
           if (priceData && priceData.currentPrice) {
-            let percentageChange = 'N/A';
+            let percentageChange = "N/A";
             if (priceData.previousClose) {
-              percentageChange = ((priceData.currentPrice - priceData.previousClose) / priceData.previousClose * 100).toFixed(2);
+              percentageChange = (
+                ((priceData.currentPrice - priceData.previousClose) /
+                  priceData.previousClose) *
+                100
+              ).toFixed(2);
             }
+
+            const latestEarnings = await priceService.getLatestEarnings(
+              investment.symbol
+            );
+            const upcomingEarnings = await priceService.getUpcomingEarnings(
+              investment.symbol
+            );
 
             return {
               ...investment,
               currentPrice: priceData.currentPrice,
               percentageChange,
-              dividends, // Añadimos los dividendos a la respuesta
+              dividends,
+              latestEarnings: latestEarnings || "N/A", // Últimos earnings
+              upcomingEarnings: upcomingEarnings || "N/A", // Próximos earnings // Añadimos los dividendos a la respuesta
             };
           } else {
             return {
               ...investment,
-              currentPrice: 'N/A',
-              percentageChange: 'N/A',
-              dividends: dividends ? dividends : 'No hay dividendos disponibles',
+              currentPrice: "N/A",
+              percentageChange: "N/A",
+              dividends: dividends
+                ? dividends
+                : "No hay dividendos disponibles",
+              latestEarnings: latestEarnings || "N/A", // Últimos earnings
+              upcomingEarnings: upcomingEarnings || "N/A", // Próximos earnings
             };
           }
         })
@@ -82,8 +105,10 @@ export const investmentController = {
 
       return res.status(200).json(investmentsWithPrices);
     } catch (error) {
-      console.error('Error al obtener las inversiones:', error);
-      return res.status(500).json({ message: 'Error al obtener las inversiones' });
+      console.error("Error al obtener las inversiones:", error);
+      return res
+        .status(500)
+        .json({ message: "Error al obtener las inversiones" });
     }
   },
 };

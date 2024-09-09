@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import Papa from 'papaparse';
 import { PriceData } from '../types/priceData'; // Interfaz que ya tienes creada
 import { DividendResponse } from '../types/dividendData'; // Interfaz que ya tienes creada
 
@@ -108,7 +109,77 @@ const priceService = {
       return null;
     }
   },
-};
+  
+  async getLatestEarnings(symbol: string): Promise<any | null> {
+    try {
+      const response = await axios.get(`https://www.alphavantage.co/query`, {
+        params: {
+          function: 'EARNINGS',
+          symbol,
+          apikey: ALPHA_VANTAGE_API_KEY,
+        },
+      });
 
+      const earningsData = response.data['quarterlyEarnings'];
+      if (!earningsData || earningsData.length === 0) {
+        console.error(`No se encontraron earnings para ${symbol}`);
+        return null;
+      }
+
+      const latestEarnings = earningsData.slice(0, 1).map((earning: any) => ({
+        fiscalDateEnding: earning.fiscalDateEnding,
+        reportedDate: earning.reportedDate,
+        reportedEPS: earning.reportedEPS,
+        estimatedEPS: earning.estimatedEPS,
+        surprise: earning.surprise,
+        surprisePercentage: earning.surprisePercentage,
+      }));
+
+      return latestEarnings[0]; // Devolvemos el último earnings publicado
+    } catch (error) {
+      console.error('Error obteniendo earnings para', symbol, ':', error);
+      return null;
+    }
+  },
+
+  // Nueva función para obtener earnings futuros
+  async getUpcomingEarnings(symbol: string): Promise<any | null> {
+    try {
+      const response = await axios.get(`https://www.alphavantage.co/query`, {
+        params: {
+          function: 'EARNINGS_CALENDAR',
+          symbol,
+          horizon: '3month',
+          apikey: ALPHA_VANTAGE_API_KEY,
+        },
+        responseType: 'arraybuffer', // Obtenemos los datos como un buffer
+      });
+
+      const csvData = Buffer.from(response.data, 'binary').toString('utf-8'); // Convertimos el buffer a texto
+      const parsedData = Papa.parse(csvData, {
+        header: true, // Para que convierta la primera fila en claves
+        dynamicTyping: true, // Convertir valores automáticamente a su tipo de dato
+      });
+
+      const earningsData = parsedData.data;
+
+      if (!earningsData || earningsData.length === 0) {
+        console.error(`No se encontraron earnings futuros para ${symbol}`);
+        return null;
+      }
+
+      const upcomingEarnings = earningsData.map((earning: any) => ({
+        fiscalDateEnding: earning['fiscalDateEnding'],
+        reportDate: earning['reportedDate'],
+        estimatedEPS: earning['estimatedEPS'],
+      }));
+
+      return upcomingEarnings; // Devolvemos el próximo earnings esperado
+    } catch (error) {
+      console.error('Error obteniendo earnings futuros para', symbol, ':', error);
+      return null;
+    }
+  },
+};
 
 export default priceService;
