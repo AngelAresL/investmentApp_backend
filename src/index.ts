@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import app from './app';  // Importar la app de Express
 import { User } from './entity/user';
 import { Investment } from './entity/investment';
+import { InvestmentReport } from './entity/investmentReport';
 
 const port = process.env.PORT || 3001;
 
@@ -16,7 +17,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || 'mydb',
   synchronize: true,
   logging: true,
-  entities: [User,Investment],
+  entities: [User,Investment, InvestmentReport],
   subscribers: [],
   migrations: [],
 });

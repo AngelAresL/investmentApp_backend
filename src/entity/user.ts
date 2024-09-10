@@ -1,5 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Investment } from "./investment";
+import { InvestmentReport } from "./investmentReport";
 
 @Entity()
 export class User {
@@ -22,14 +30,16 @@ export class User {
   isActive: boolean;
 
   @OneToMany(() => Investment, (investment) => investment.user)
-  investments?: Investment[]; // Se marca como opcional
+  investments?: Investment[]; 
+  @OneToMany(() => InvestmentReport, (report) => report.user)
+  investmentReports?: InvestmentReport[];
 
   // Fecha de creación
-  @CreateDateColumn({ type: 'timestamp' }) 
+  @CreateDateColumn({ type: "timestamp" })
   createdAt: Date;
 
   // Fecha de la última actualización
-  @UpdateDateColumn({ type: 'timestamp' }) 
+  @UpdateDateColumn({ type: "timestamp" })
   updatedAt: Date;
 
   constructor() {
