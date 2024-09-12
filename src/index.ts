@@ -1,9 +1,7 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import app from './app';  // Importar la app de Express
-import { User } from './entity/user';
-import { Investment } from './entity/investment';
-import { InvestmentReport } from './entity/investmentReport';
+
 
 const port = process.env.PORT || 3001;
 
@@ -11,15 +9,15 @@ const port = process.env.PORT || 3001;
 export const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
-  port: 5432,
+  port: Number(process.env.DB_PORT)|| 5432,
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME || 'mydb',
   synchronize: true,
-  logging: true,
-  entities: [User,Investment, InvestmentReport],
-  subscribers: [],
-  migrations: [],
+  logging: false,
+  entities: ["src/entity/**/*.ts"],
+  migrations: ["src/migration/**/*.ts"],
+  subscribers: ["src/subscriber/**/*.ts"],
 });
 
 AppDataSource.initialize()

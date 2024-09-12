@@ -1,36 +1,36 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 
+// Definir el enum para los tipos de inversión
+export enum InvestmentType {
+  STOCK = 'stock',
+  CRYPTO = 'crypto',
+}
+
 @Entity()
 export class Investment {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;  // El símbolo ! indica que TypeORM gestionará este campo, por lo que no es necesario inicializarlo en el constructor.
 
   @Column()
-  name: string; // Nombre de la inversión
+  name!: string;  // Agregar ! para indicar que se inicializa en algún momento, pero no necesariamente en el constructor.
 
   @Column()
-  symbol: string; // Símbolo de la inversión (ticker de la acción)
+  symbol!: string;
 
-  @Column()
-  type: string; // Tipo de inversión (acción, fondo, etc.)
+  @Column({
+    type: 'enum',
+    enum: InvestmentType,
+    default: InvestmentType.STOCK,
+  })
+  type!: InvestmentType;
 
   @Column('decimal')
-  amount: number; // Monto invertido
+  amount!: number;
 
-  @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' }) // Fecha de la inversión por defecto
-  date: Date;
+  @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
+  date!: Date;
 
   @ManyToOne(() => User, (user) => user.investments)
-  user: User; // Relación con el usuario
-
-  constructor() {
-    this.id = 0;
-    this.name = '';
-    this.symbol = '';
-    this.type = '';
-    this.amount = 0;
-    this.date = new Date(); // Generación automática
-    this.user = new User();
-  }
+  user!: User;
 }
