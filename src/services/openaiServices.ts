@@ -29,7 +29,7 @@ const openaiService = {
             content: `Here is the portfolio value: $${data.totalPortfolioValue}. The investments details are as follows: ${JSON.stringify(data.investmentsInfo)}. Please provide a detailed analysis of the portfolio based on the user's investments, market conditions, and any potential strategies or risks.` 
           }
         ],
-        max_tokens: 700,  // Ajustar según necesidad
+        max_tokens: 700, 
       },
       {
         headers: {
@@ -39,7 +39,7 @@ const openaiService = {
       }
     );
 
-    return response.data.choices[0].message.content.trim();  // Devolvemos el contenido del informe generado por OpenAI
+    return response.data.choices[0].message.content.trim();  
   },
 };
 

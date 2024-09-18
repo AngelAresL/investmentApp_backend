@@ -4,7 +4,7 @@ import { authController } from "../controllers/authController";
 
 const router = Router();
 
-// Ruta para el registro con validación
+
 router.post(
   "/register",
   [
@@ -16,7 +16,7 @@ router.post(
   authController.register
 );
 
-// Ruta para el login con validación
+
 router.post(
   "/login",
   [

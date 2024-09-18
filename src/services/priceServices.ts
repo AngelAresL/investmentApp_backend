@@ -1,8 +1,8 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 import Papa from 'papaparse';
-import { PriceData } from '../types/priceData'; // Interfaz que ya tienes creada
-import { DividendResponse } from '../types/dividendData'; // Interfaz que ya tienes creada
+import { PriceData } from '../types/priceData';
+import { DividendResponse } from '../types/dividendData'; 
 
 dotenv.config();
 
@@ -25,8 +25,8 @@ const priceService = {
         return null;
       }
 
-      const today = Object.keys(timeSeries)[0]; // Última fecha disponible
-      const yesterday = Object.keys(timeSeries)[1]; // Fecha anterior disponible
+      const today = Object.keys(timeSeries)[0]; 
+      const yesterday = Object.keys(timeSeries)[1]; 
 
       const currentPrice = parseFloat(timeSeries[today]['4. close']);
       const previousClose = parseFloat(timeSeries[yesterday]['4. close']);
@@ -56,7 +56,7 @@ const priceService = {
       }
 
       const currentPrice = parseFloat(data['5. Exchange Rate']);
-      return { currentPrice }; // Solo tenemos precio actual para criptomonedas
+      return { currentPrice }; 
     } catch (error) {
       console.error('Error obteniendo el precio para la criptomoneda', symbol, ':', error);
       return null;
@@ -79,12 +79,12 @@ const priceService = {
         return null;
       }
 
-      // Procesamos los dividendos y devolvemos solo los más recientes y futuros
+      
       const currentDate = new Date();
 
       const pastDividends = dividendData
         .filter((dividend: any) => new Date(dividend.ex_dividend_date) < currentDate)
-        .slice(0, 5)  // Limitar a los últimos 5 dividendos pasados
+        .slice(0, 5)  
         .map((dividend: any) => ({
           exDate: dividend.ex_dividend_date,
           amount: dividend.amount,
@@ -135,14 +135,14 @@ const priceService = {
         surprisePercentage: earning.surprisePercentage,
       }));
 
-      return latestEarnings[0]; // Devolvemos el último earnings publicado
+      return latestEarnings[0]; 
     } catch (error) {
       console.error('Error obteniendo earnings para', symbol, ':', error);
       return null;
     }
   },
 
-  // Nueva función para obtener earnings futuros
+  
   async getUpcomingEarnings(symbol: string): Promise<any | null> {
     try {
       const response = await axios.get(`https://www.alphavantage.co/query`, {
@@ -152,13 +152,13 @@ const priceService = {
           horizon: '3month',
           apikey: ALPHA_VANTAGE_API_KEY,
         },
-        responseType: 'arraybuffer', // Obtenemos los datos como un buffer
+        responseType: 'arraybuffer', 
       });
 
-      const csvData = Buffer.from(response.data, 'binary').toString('utf-8'); // Convertimos el buffer a texto
+      const csvData = Buffer.from(response.data, 'binary').toString('utf-8'); 
       const parsedData = Papa.parse(csvData, {
-        header: true, // Para que convierta la primera fila en claves
-        dynamicTyping: true, // Convertir valores automáticamente a su tipo de dato
+        header: true, 
+        dynamicTyping: true, 
       });
 
       const earningsData = parsedData.data;
@@ -174,7 +174,7 @@ const priceService = {
         estimatedEPS: earning['estimatedEPS'],
       }));
 
-      return upcomingEarnings; // Devolvemos el próximo earnings esperado
+      return upcomingEarnings; 
     } catch (error) {
       console.error('Error obteniendo earnings futuros para', symbol, ':', error);
       return null;

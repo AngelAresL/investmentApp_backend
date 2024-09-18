@@ -6,7 +6,7 @@ import { InvestmentType } from '../entity/investment';
 
 const router = Router();
 
-// Añadir inversión con validación
+
 router.post(
   '/add',
   [
@@ -21,7 +21,7 @@ router.post(
   investmentController.addInvestment
 );
 
-// Obtener todas las inversiones del usuario
+
 router.get('/all', authenticateJWT, investmentController.getInvestments);
 
 export default router;

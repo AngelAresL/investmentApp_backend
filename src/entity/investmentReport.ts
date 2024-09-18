@@ -10,10 +10,10 @@ export class InvestmentReport {
   user: User;
 
   @Column({ type: 'jsonb' })
-  investmentsData: any; // Aquí guardamos la información completa de las inversiones
+  investmentsData: any; 
 
   @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date; // Fecha en que se generó el reporte
+  createdAt: Date; 
 
   constructor() {
     this.id = 0;

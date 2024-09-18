@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-// Estructura para los errores personalizados
+
 class AppError extends Error {
   statusCode: number;
   errors?: any;
@@ -13,7 +13,7 @@ class AppError extends Error {
   }
 }
 
-// Middleware de manejo de errores
+
 const globalErrorHandler = (
   err: AppError,
   req: Request,
@@ -23,7 +23,7 @@ const globalErrorHandler = (
   const statusCode = err.statusCode || 500;
   const response = {
     message: err.message || "Error del servidor",
-    ...(err.errors && { errors: err.errors }), // Incluye los errores si están presentes
+    ...(err.errors && { errors: err.errors }), 
   };
   res.status(statusCode).json(response);
 };

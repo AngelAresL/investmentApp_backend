@@ -34,11 +34,11 @@ export class User {
   @OneToMany(() => InvestmentReport, (report) => report.user)
   investmentReports?: InvestmentReport[];
 
-  // Fecha de creación
+  
   @CreateDateColumn({ type: "timestamp" })
   createdAt: Date;
 
-  // Fecha de la última actualización
+  
   @UpdateDateColumn({ type: "timestamp" })
   updatedAt: Date;
 
@@ -49,7 +49,7 @@ export class User {
     this.email = "";
     this.password = "";
     this.isActive = true;
-    this.createdAt = new Date(); // Se inicializa con la fecha actual
-    this.updatedAt = new Date(); // Se inicializa con la fecha actual
+    this.createdAt = new Date(); 
+    this.updatedAt = new Date(); 
   }
 }

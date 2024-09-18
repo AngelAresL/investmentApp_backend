@@ -13,14 +13,14 @@ dotenv.config();
 
 const app = express();
 
-// Middlewares
+
 // app.use(helmet());
 // app.use(cors());
-app.use(express.json());  // Para poder parsear JSON en las solicitudes
+app.use(express.json());  
 
-// Rutas
+
 // app.use('/api/openai', openaiRoutes); 
-app.use("/api/auth", authRoutes); // Registrar las rutas de OpenAI
+app.use("/api/auth", authRoutes); 
 app.use('/api/investments', investmentRoutes); 
 
 app.use(globalErrorHandler);

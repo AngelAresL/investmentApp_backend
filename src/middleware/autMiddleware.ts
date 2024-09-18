@@ -12,9 +12,9 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "defaultsecret"
-    ); // Verifica el token
+    ); 
     res.locals.user = decoded;
-    next(); // Continúa con la solicitud
+    next(); 
   } catch (error) {
     return res.status(403).json({ message: "Invalid token" });
   }

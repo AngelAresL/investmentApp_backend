@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 
-// Definir el enum para los tipos de inversión
+
 export enum InvestmentType {
   STOCK = 'stock',
   CRYPTO = 'crypto',
@@ -10,10 +10,10 @@ export enum InvestmentType {
 @Entity()
 export class Investment {
   @PrimaryGeneratedColumn()
-  id!: number;  // El símbolo ! indica que TypeORM gestionará este campo, por lo que no es necesario inicializarlo en el constructor.
+  id!: number;  
 
   @Column()
-  name!: string;  // Agregar ! para indicar que se inicializa en algún momento, pero no necesariamente en el constructor.
+  name!: string;  
 
   @Column()
   symbol!: string;

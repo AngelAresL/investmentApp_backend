@@ -8,20 +8,20 @@ import { MoreThanOrEqual } from "typeorm";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { AppError } from "../middleware/errorMiddleware";
-import logger from "../utils/logger"; // Importar el logger
+import logger from "../utils/logger"; 
 
 export const authController = {
   register: async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      logger.warn('Error de validación en registro', { errors: errors.array() }); // Log de advertencia
+      logger.warn('Error de validación en registro', { errors: errors.array() }); 
       return next(new AppError('Error de validación de datos.', 400, errors.array()));
     }
 
     const { email, password, firstName, lastName } = req.body;
 
     if (!email || !password || !firstName || !lastName) {
-      logger.warn('Campos faltantes en registro', { email, firstName, lastName }); // Log de advertencia
+      logger.warn('Campos faltantes en registro', { email, firstName, lastName });
       return next(new AppError("Todos los campos son obligatorios.", 400));
     }
 
@@ -30,7 +30,7 @@ export const authController = {
       const existingUser = await userRepository.findOneBy({ email });
 
       if (existingUser) {
-        logger.info(`Intento de registro con email ya existente: ${email}`); // Log informativo
+        logger.info(`Intento de registro con email ya existente: ${email}`); 
         return next(new AppError("El usuario ya existe.", 400));
       }
 
@@ -44,10 +44,10 @@ export const authController = {
 
       await userRepository.save(newUser);
 
-      logger.info(`Usuario registrado exitosamente: ${email}`); // Log informativo
+      logger.info(`Usuario registrado exitosamente: ${email}`); 
       return res.status(201).json({ message: "Usuario registrado exitosamente." });
     } catch (error) {
-      logger.error("Error al registrar usuario", { error: (error as Error).message }); // Log de error
+      logger.error("Error al registrar usuario", { error: (error as Error).message }); 
       next(new AppError("Error al registrar usuario.", 500, (error as Error).message));
     }
   },
@@ -55,7 +55,7 @@ export const authController = {
   login: async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      logger.warn('Error de validación en login', { errors: errors.array() }); // Log de advertencia
+      logger.warn('Error de validación en login', { errors: errors.array() }); 
       return next(new AppError('Error de validación de datos.', 400, errors.array()));
     }
 
@@ -66,13 +66,13 @@ export const authController = {
       const existingUser = await userRepository.findOneBy({ email });
 
       if (!existingUser) {
-        logger.info(`Intento de login con email no registrado: ${email}`); // Log informativo
+        logger.info(`Intento de login con email no registrado: ${email}`); 
         return next(new AppError("Usuario no encontrado.", 404));
       }
 
       const validPassword = await bcrypt.compare(password, existingUser.password);
       if (!validPassword) {
-        logger.info(`Intento de login fallido para el usuario: ${email}`); // Log informativo
+        logger.info(`Intento de login fallido para el usuario: ${email}`);
         return next(new AppError("Contraseña incorrecta.", 400));
       }
 
@@ -82,7 +82,7 @@ export const authController = {
         { expiresIn: "24h" }
       );
 
-      logger.info(`Login exitoso para el usuario: ${email}`); // Log informativo
+      logger.info(`Login exitoso para el usuario: ${email}`); 
 
       const currentDate = new Date();
       const investmentReportRepository = AppDataSource.getRepository(InvestmentReport);
@@ -95,12 +95,12 @@ export const authController = {
 
       if (!lastReport) {
         await generateDailyReport(token, existingUser.id);
-        logger.info(`Generado reporte diario para el usuario: ${email}`); // Log informativo
+        logger.info(`Generado reporte diario para el usuario: ${email}`); 
       }
 
       return res.json({ token });
     } catch (error) {
-      logger.error("Error en el login", { error: (error as Error).message }); // Log de error
+      logger.error("Error en el login", { error: (error as Error).message }); 
       next(new AppError("Error en el servidor", 500, (error as Error).message));
     }
   },
