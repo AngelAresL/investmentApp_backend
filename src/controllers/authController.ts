@@ -98,7 +98,7 @@ export const authController = {
         logger.info(`Generado reporte diario para el usuario: ${email}`); 
       }
 
-      return res.json({ token });
+      return res.json({ token,name: existingUser.firstName, lastName: existingUser.lastName });
     } catch (error) {
       logger.error("Error en el login", { error: (error as Error).message }); 
       next(new AppError("Error en el servidor", 500, (error as Error).message));

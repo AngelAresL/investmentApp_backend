@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-// import cors from 'cors';
+import cors from 'cors';
 // import helmet from 'helmet';
 // import openaiRoutes from './routes/openaiRoutes'; 
 import authRoutes from "./routes/authRoutes"; 
@@ -15,7 +15,10 @@ const app = express();
 
 
 // app.use(helmet());
-// app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', // Reemplaza con la URL de tu frontend
+    credentials: true, // Si es necesario para enviar cookies o headers de autenticación
+  }));
 app.use(express.json());  
 
 
