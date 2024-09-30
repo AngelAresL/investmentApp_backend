@@ -16,7 +16,7 @@ const app = express();
 
 // app.use(helmet());
 app.use(cors({
-    origin: 'http://localhost:3000', // Reemplaza con la URL de tu frontend
+    origin: 'http://localhost:3002', // Reemplaza con la URL de tu frontend
     credentials: true, // Si es necesario para enviar cookies o headers de autenticación
   }));
 app.use(express.json());  

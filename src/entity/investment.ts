@@ -1,34 +1,36 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './user';
-
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { User } from "./user";
 
 export enum InvestmentType {
-  STOCK = 'stock',
-  CRYPTO = 'crypto',
+  STOCK = "stock",
+  CRYPTO = "crypto",
 }
 
 @Entity()
 export class Investment {
   @PrimaryGeneratedColumn()
-  id!: number;  
+  id!: number;
 
   @Column()
-  name!: string;  
+  name!: string;
 
   @Column()
   symbol!: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: InvestmentType,
     default: InvestmentType.STOCK,
   })
   type!: InvestmentType;
 
-  @Column('decimal')
+  @Column("decimal")
   amount!: number;
 
-  @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
+  @Column()
+  currency!: string;
+
+  @Column({ type: "date", default: () => "CURRENT_TIMESTAMP" })
   date!: Date;
 
   @ManyToOne(() => User, (user) => user.investments)

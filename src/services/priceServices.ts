@@ -18,19 +18,23 @@ const priceService = {
           apikey: ALPHA_VANTAGE_API_KEY,
         },
       });
-
+  
+      // Loggeo completo de la respuesta para inspeccionar los datos
+      console.log('Respuesta completa de TIME_SERIES_DAILY:', response.data);
+  
       const timeSeries = response.data['Time Series (Daily)'];
       if (!timeSeries) {
         console.error(`No se encontraron datos de precios para ${symbol}`);
         return null;
       }
-
+  
       const today = Object.keys(timeSeries)[0]; 
       const yesterday = Object.keys(timeSeries)[1]; 
-
+  
       const currentPrice = parseFloat(timeSeries[today]['4. close']);
       const previousClose = parseFloat(timeSeries[yesterday]['4. close']);
-
+      console.log('Precio actual:', currentPrice, 'Cierre anterior:', previousClose);
+  
       return { currentPrice, previousClose };
     } catch (error) {
       console.error('Error obteniendo el precio para', symbol, ':', error);
